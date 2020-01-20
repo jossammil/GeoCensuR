@@ -19,21 +19,13 @@
 geocen <- function(oneline = NULL,
                   street = NULL, city = NULL, state = NULL, zip = NULL,
                   separate = FALSE,
-<<<<<<< HEAD
                   vintage="4", layers = "8,10,12",
-=======
-                  vintage="4", layers = "8",
->>>>>>> 312d8816e2e85f26b70458ada891910551e505d5
                   benchmark = "Public_AR_Current",
                   format="json") {
 
   begin <- "https://geocoding.geo.census.gov/geocoder/geographies/"
   # TESTING PURPOSE
-<<<<<<< HEAD
   #oneline <- ""
-=======
-  #oneline <- "1600 Pennslyvania Ave, Washington DC"
->>>>>>> 312d8816e2e85f26b70458ada891910551e505d5
   #oneline1 <- gsub(",", "", gsub("\\s", "+", oneline))
 
   given <- names(as.list(match.call())[-1])
@@ -45,15 +37,9 @@ geocen <- function(oneline = NULL,
   sepadd <- c("street", "city", "state", "zip")
 
   if("oneline" %in% given & separate == F) {
-<<<<<<< HEAD
     oneline1 <- gsub(",", "", gsub("\\s", "+", oneline))
     geourl <- paste0(begin,
                      "onelineaddress?address=", oneline1,
-=======
-    oneline <- gsub(",", "", gsub("\\s", "+", oneline))
-    geourl <- paste0(begin,
-                     "onelineaddress?address=", oneline,
->>>>>>> 312d8816e2e85f26b70458ada891910551e505d5
                      "&benchmark=", benchmark,
                      "&vintage=", vintage,
                      "&format=", format,
@@ -75,18 +61,12 @@ geocen <- function(oneline = NULL,
     )}
   }
 
-<<<<<<< HEAD
   retc <- httr::GET(geourl)
   ra_retc <- httr::content(retc, as = "text", encoding = "UTF-8")
   ra_retc <- jsonlite::fromJSON(ra_retc, flatten = T)
 
   #retc <- RCurl::getURL(geourl)
   #ra_retc <- jsonlite::fromJSON(retc, flatten = T)
-=======
-
-  retc <- RCurl::getURL(geourl)
-  ra_retc <- jsonlite::fromJSON(retc, flatten = T)
->>>>>>> 312d8816e2e85f26b70458ada891910551e505d5
 
   #### check error here in future updates
   n2 <- as.data.frame(ra_retc)
@@ -101,19 +81,11 @@ geocen <- function(oneline = NULL,
                     #, city = city, state = state, zip = zip
   )
 
-<<<<<<< HEAD
   layers1 <- unlist(strsplit( (gsub(pattern = ",", replacement = " ", layers)) , split =" ") )
   laylength <- length(layers1)
 
   for(i in seq_along(1:laylength)) {
     out[,paste0("lay", layers1[i])] <- n2[[(length(names(n2))-i)+1]][[1]]$BASENAME
-=======
-  layers <- unlist(strsplit( (gsub(pattern = ",", replacement = "", layers)) , split =" ") )
-  laylength <- length(layers)
-
-  for(i in seq_along(1:laylength)) {
-    out[,paste0("lay", layers[i])] <- n2[[(length(names(n2))-laylength)+i]][[1]]$BASENAME
->>>>>>> 312d8816e2e85f26b70458ada891910551e505d5
   }
 
   return(out)
