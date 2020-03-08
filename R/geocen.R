@@ -69,7 +69,16 @@ geocen <- function(oneline = NULL,
   #ra_retc <- jsonlite::fromJSON(retc, flatten = T)
 
   #### check error here in future updates
-  n2 <- as.data.frame(ra_retc)
+  #n2 <- as.data.frame(ra_retc)
+
+  #### New addition 20200307 to help with unknown addresses
+  n2 <- tryCatch(
+    as.data.frame(ra_retc),
+    error = function(e) data.frame(
+      result.addressMatches.coordinates.x = NA,
+      result.addressMatches.coordinates.y = NA
+    )
+  )
 
   out <- data.frame(long.x = n2$result.addressMatches.coordinates.x,
                     lat.y = n2$result.addressMatches.coordinates.y,
@@ -84,8 +93,17 @@ geocen <- function(oneline = NULL,
   layers1 <- unlist(strsplit( (gsub(pattern = ",", replacement = " ", layers)) , split =" ") )
   laylength <- length(layers1)
 
+  # for(i in seq_along(1:laylength)) {
+  #   out[,paste0("lay", layers1[i])] <- n2[[(length(names(n2))-i)+1]][[1]]$BASENAME
+  # }
+
+  #### New addition 20200307 to help with unknown addresses
   for(i in seq_along(1:laylength)) {
-    out[,paste0("lay", layers1[i])] <- n2[[(length(names(n2))-i)+1]][[1]]$BASENAME
+    out[,paste0("lay", layers1[i])] <-
+      tryCatch(
+        n2[[(length(names(n2))-i)+1]][[1]]$BASENAME,
+        error = function(e) NA
+      )
   }
 
   return(out)
